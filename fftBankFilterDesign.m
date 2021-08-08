@@ -20,7 +20,9 @@
 %  INPUT ARGUMENTS 
 %  - fs: sampling rate on which the filter is based. Note that FS needs 
 %    to be identical to the sampling rate of the signal to be filtered for 
-%    cuttoff frequencies to be correct.
+%    cuttoff frequencies to be correct. Note that the signal to be filtered 
+%    must have the same sampling rate if you want the filter to be applied 
+%    at the correct frequencies.
 %  - bpo: bandwidth factor. Positive integer that specifies the number of 
 %    bands in an octave (i.e. BPO = 1, octave; BPO = 2, half-octave; BPO = 
 %    3, third-octave, etc). BPO determines the nominal bandwidth of the band-
@@ -30,19 +32,22 @@
 %    limits of the filter bank [Hz].
 %    
 %  OUTPUT ARGUMENTS
-%  - FftFilter: structure containing information for the FFT digital filter
-%    bank. FFTFILTER comprises the following fields:
-%    ¬ 'sampleRate': sampling rate used to design the filter [Hz] (see input 
-%      variable FS). Note that the signal to be filtered must have the 
-%      same sampling rate if you want the filter to be applied at the
-%      correct frequencies.
-%    ¬ 'halfPowerFreq1': bottom cuttoff frequency (-3dB) [Hz]
+%  - FftFilterBank: structure containing information for the FFT digital 
+%    filter bank. FFTFILTERBANK comprises the following fields:
+%    ¬ 'sampleRate': sampling rate [Hz] (see input variable FS). 
+%    ¬ 'bandsPerOctave': bandwidth factor (see BPO input).
+%    ¬ 'nominalFreq': nominal central frequencies of bands [Hz]
+%    ¬ 'centralFreq': central frequencies of bands [Hz]
+%    ¬ 'halfPowerFreq1': bottom cuttoff frequencies (-3dB) of bands [Hz]
 %    ¬ 'halfPowerFreq2': top cutoff frequency (-3dB) [Hz]
-%    ¬ 'halfPowerFreqn1': normalised bottom cutoff frequency (-3dB)
-%    ¬ 'halfPowerFreqn2': normalised top cutoff frequency (-3dB)
+%    ¬ 'centralFreqn': normalised central frequencies of bands [Hz]
+%    ¬ 'halfPowerFreqn1': normalised bottom cutoff frequencies (-3dB) of 
+%      bands [Hz]
+%    ¬ 'halfPowerFreqn2': normalised top cutoff frequencies (-3dB) of
+%      bands [Hz]
 %
 %  FUNCTION CALL
-%  FftFilter = FFTSINGLEFILTERDESIGN(fs,freqLimits) % ZEROPAD = TRUE
+%  FftFilter = FFTBANKFILTERDESIGN(fs,bpo,freqLimits) % ZEROPAD = TRUE
 %
 %  FUNCTION DEPENDENCIES
 %  - None
@@ -56,7 +61,7 @@
 %  freqLimits = [20 10e3];
 %
 %  2) Design FFT Filter
-%  FftFilter = FFTSINGLEFILTERDESIGN(fs,freqLimits)
+%  FftFilter = FFTBANKFILTERDESIGN(fs,bpo,freqLimits)
 %
 %  REFERENCES
 %  - ANSI (2004), "ANSI S1.11: Specification for Octave, Half-Octave and
@@ -65,7 +70,7 @@
 %    filters. Part 1: Specifications". European Standard BS EN 61260-1:2014
 %    published by the British Standards Institution (BSI).
 %
-%  See also FFTSINGLEFILTER
+%  See also FFTBANKFILTER
 
 %  VERSION 1.0
 %  Guillermo Jimenez Arranz
@@ -126,15 +131,16 @@ else
 end
 
 % Calculate Cutoff Frequencies of Bandpass Filters
-fb = fractionalOctaveBands('BandsPerOctave',bpo,'FrequencyLimits',...
+[fb,fbc_nom] = fractionalOctaveBands('BandsPerOctave',bpo,'FrequencyLimits',...
     [f1 f2],'LimitMode','bandedge','Base10',false); % central and edge frequencies of octave bands
-fb1 = fb(:,1)'; % low-edge frequencies of fractional octave bands
-fbc = fb(:,2)'; % central frequencies of fractional octave bands
-fb2 = fb(:,3)'; % high-edge frequencies of fractional octave bands
+fb1 = fb(:,1); % low-edge frequencies of fractional octave bands
+fbc = fb(:,2); % central frequencies of fractional octave bands
+fb2 = fb(:,3); % high-edge frequencies of fractional octave bands
 
 % Filter Signal
 FftFilter.sampleRate = fs;
 FftFilter.bandsPerOctave = bpo;
+FftFilter.nominalFreq = fbc_nom';
 FftFilter.centralFreq = fbc';
 FftFilter.halfPowerFreq1 = fb1';
 FftFilter.halfPowerFreq2 = fb2';

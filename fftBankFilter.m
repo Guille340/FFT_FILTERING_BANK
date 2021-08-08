@@ -27,8 +27,8 @@
 %    amplitudes of the signal in each filtered band.
 %
 %  FUNCTION CALL
-%  xb = FFTSINGLEFILTER(FftFilterBank,x) % ZEROPAD = TRUE
-%  xb = FFTSINGLEFILTER(FftFilterBank,x,zeroPad)
+%  xb = FFTBANKFILTER(FftFilterBank,x) % ZEROPAD = TRUE
+%  xb = FFTBANKFILTER(FftFilterBank,x,zeroPad)
 %
 %  FUNCTION DEPENDENCIES
 %  - fftFilter
