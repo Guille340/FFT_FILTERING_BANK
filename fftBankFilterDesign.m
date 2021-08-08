@@ -11,11 +11,11 @@
 %  signal. For details about the content of the structure check the "OUTPUT 
 %  VARIABLES" section.
 %
-%  FFTBANKFILTERDESIGN is a lightweight function used to perform some
-%  error control over the design parameters of the FFT filter bank. This is 
-%  done to minimise the number of operations carried out within FFTBANKFILTER, 
-%  since the latter will be applied multiple times whereas the filter design
-%  will only happen once.
+%  FFTBANKFILTERDESIGN is a lightweight function used to perform error control 
+%  over the design parameters of the FFT filter bank. This is done to minimise 
+%  the number of operations carried out within FFTBANKFILTER, since the latter 
+%  will be applied multiple times whereas the filter design will only happen 
+%  once.
 %
 %  INPUT ARGUMENTS 
 %  - fs: sampling rate on which the filter is based. Note that FS needs 
@@ -27,14 +27,14 @@
 %    pass filter. BPO is reciprocal of the bandwidth designator (see "Terms 
 %    and Definitions" in ANSI S1.11 or BS EN 61260-1:2014).
 %  - freqLimits: two-element vector indicating the bottom and top frequency 
-%    limits of the filter bank [Hz] (see 'FrequencyLimits' property).
+%    limits of the filter bank [Hz].
 %    
 %  OUTPUT ARGUMENTS
-%  - FftFilter: structure containing information for the FFT digital
-%    FFTFILTER comprises the following fields:
+%  - FftFilter: structure containing information for the FFT digital filter
+%    bank. FFTFILTER comprises the following fields:
 %    ¬ 'sampleRate': sampling rate used to design the filter [Hz] (see input 
 %      variable FS). Note that the signal to be filtered must have the 
-%      same sampling rate if we want the filter to be applied at the
+%      same sampling rate if you want the filter to be applied at the
 %      correct frequencies.
 %    ¬ 'halfPowerFreq1': bottom cuttoff frequency (-3dB) [Hz]
 %    ¬ 'halfPowerFreq2': top cutoff frequency (-3dB) [Hz]

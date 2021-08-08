@@ -1,14 +1,14 @@
 %  xb = FFTFILTER(x,fn1,fn2,varargin)
 %
 %  DESCRIPTION
-%  Calculates the RMS amplitude of X within the frequency bands delimited
-%  by the normalised cutoff frequencies FN1 and FN2. 
+%  Calculates the RMS amplitude of X within the frequency band delimited by 
+%  the normalised cutoff frequencies FN1 and FN2. 
 %
-%  The variable input argument ZEROPAD is a logical indicates whether 
-%  zero padding should be applied before filtering. Applying zero-padding
-%  is particularly important when the period associated to the frequency 
-%  band to be filtered is comparable to or larger than the duration of
-%  the filtered signal X. ZEROPAD = TRUE is used by default. As a general
+%  The variable input argument ZEROPAD is a logical value that indicates 
+%  whether zero padding will be applied before filtering. Applying zero-
+%  padding is particularly important when the period associated to the 
+%  frequency band to be filtered is comparable to or larger than the duration 
+%  of the filtered signal X. ZEROPAD = TRUE is used by default. As a general
 %  rule, signals should not be filtered at frequencies lower than 10/TAU,
 %  where TAU is the duration of the signal.
 %

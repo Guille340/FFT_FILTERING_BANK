@@ -1,4 +1,4 @@
-%  xb = FFTBANKFILTER(FftFilterBank,x,varargin)
+%  [xb,fc] = FFTBANKFILTER(FftFilterBank,x,varargin)
 %
 %  DESCRIPTION
 %  Filters the input signal X with sampling rate FS using a FFT filter bank
@@ -11,8 +11,8 @@
 %  - FftFilterBank: structure containing information for the FFT digital 
 %    filter bank. FFTFILTER is generated with FFTSINGLEFILTERDESIGN (see 
 %    function for details about its fields).
-%  - x: vector of data to be filtered. Its length must be three times larger, 
-%    or more, than the filter order (if unknown, use filtord to extract the 
+%  - x: vector of data to be filtered. Its length must be three times larger 
+%    or more than the filter order (if unknown, use filtord to extract the 
 %    filter order).
 %  - zeroPad (varargin{1}): logical or [0,1] numeric value indicating whether 
 %    zero-padding will be applied to the input signal X. Zero-padding is
@@ -61,7 +61,7 @@
 %  email: gjarranz@gmail.com
 %  07 Aug 2021
 
-function xb = fftBankFilter(FftFilterBank,x,varargin)
+function [xb,fc] = fftBankFilter(FftFilterBank,x,varargin)
 
 % Check Number of Input Arguments
 narginchk(2,3)
@@ -86,6 +86,7 @@ end
 
 % Load Filter Parameterws
 fs = FftFilterBank.sampleRate;
+fc = FftFilterBank.centralFreq;
 fn1 = FftFilterBank.halfPowerFreqn1;
 fn2 = FftFilterBank.halfPowerFreqn2;
 
