@@ -8,7 +8,7 @@
 %  with a length comparable to the filter’s group delay.
 %
 %  INPUT ARGUMENTS 
-%  - FftFilterBank: structure containing information for the FFT digital 
+%  - FftFilterBank: structure containing information from the FFT digital 
 %    filter bank. FFTFILTER is generated with FFTSINGLEFILTERDESIGN (see 
 %    function for details about its fields).
 %  - x: vector of data to be filtered. Its length must be three times larger 
@@ -21,14 +21,18 @@
 %    signal beyond its original window length. This will result in a noticeable 
 %    energy error. Depending on the signal duration and top cutoff frequency 
 %    of the filter, the error can be as large as several tens of decibels. 
+%    One-sided zero padding is applied when FILTERMODE = 'filter', and two-
+%    sided zero padding when using FILTERMODE = 'filtfilt'. Any filtering 
+%    approach will suffer from this "time leakage" effect. If this property 
+%    is omitted, ZEROPADDING = TRUE (default).
 %    
 %  OUTPUT ARGUMENTS
 %  - y: array of dimensions [2, LENGTH(X)] containing the RMS and exposure 
 %    amplitudes of the signal in each filtered band.
 %
 %  FUNCTION CALL
-%  xb = FFTBANKFILTER(FftFilterBank,x) % ZEROPAD = TRUE
-%  xb = FFTBANKFILTER(FftFilterBank,x,zeroPad)
+%  xb = fftBankFilter(FftFilterBank,x) % ZEROPAD = TRUE
+%  xb = fftBankFilter(FftFilterBank,x,zeroPad)
 %
 %  FUNCTION DEPENDENCIES
 %  - fftFilter
@@ -37,22 +41,31 @@
 %  - MATLAB (Core)
 %
 %  EXAMPLE
-%  1) Configuration Data
+%  % 1) Configuration Data
 %  fs = 44100;
 %  freqCutoff = [20 10e3];
 %  zeroPad = true;
 %  T = 1; % signal duration [s]
 %  x = 2*rand(1,T*fs) - 1; % signal
 %
-%  2) Design FFT Filter
-%  FftFilterBank = FFTBANKFILTERDESIGN(fs,bpo,freqLimits)
+%  % 2) Design FFT Filter
+%  FftFilterBank = fftBankFilterDesign(fs,bpo,freqLimits)
 %
-%  3) Filter Signal with FFT Method
-%  xb_fft = FFTBANKFILTER(FftFilterBank,x,zeroPad)
+%  % 3) Filter Signal with FFT Method
+%  [xb_fft,fc] = fftBankFilter(FftFilterBank,x,zeroPad)
 %
-%  4) Band Levels
+%  % 4) Band Levels
 %  Xb_fft_rms = 20*log10(xb_fft(1,:));
 %  Xb_fft_exp = 10*log10(xb_fft(2,:));
+%
+%  % 5) Plot Band Level Spectrum
+%  figure
+%  hold on
+%  plot(fc,Xb_fft_rms,'b')
+%  xlabel('Central Frequency [Hz]')
+%  ylabel('Band Level [dBV]')
+%  set(gca,'XScale','log')
+%  box on
 %
 %  See also FFTFILTER
 
@@ -68,7 +81,7 @@ narginchk(2,3)
 
 % Assign Variable Input Arguments
 zeroPad = true;
-if nargin == 4
+if nargin == 3
     zeroPad = varargin{1};
 end
 
@@ -78,7 +91,7 @@ if ~isnumeric(x) || ~isvector(x)
 end
 
 % Error Control (ARGUMENT: 'zeroPad')
-if ~islogical(zeroPad) || all(zeroPad ~= [0 1])
+if ~any(zeroPad == [0 1])
     zeroPad = true;
     warning(['ZEROPADDING property must be [0,1] or logical. '...
         'ZEROPADDING = TRUE will be used'])

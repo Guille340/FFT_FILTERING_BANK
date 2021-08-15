@@ -70,9 +70,10 @@ end
 if ~isnumeric(fn2) || ~isvector(fn2) || any(fn2 < 0 | fn2 > 1)
     error('FN1 must be a numeric vector with values between 0 and 1')
 end
-if ~logical(zeroPad)
+if ~any(zeroPad == [0 1])
     zeroPad = true;
-    warning('ZEROPAD must be a logical value. ZEROPAD = TRUE will be used')
+    warning(['ZEROPADDING property must be [0,1] or logical. '...
+        'ZEROPADDING = TRUE will be used'])
 end
 
 % General Parameters

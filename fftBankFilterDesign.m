@@ -2,7 +2,7 @@
 %
 %  DESCRIPTION
 %  Designs a bank of digital FFT filters to work with FFTBANKFILTER. The 
-%  function returns a structure FFTFILTER containing the sampling rate, 
+%  function returns a structure FFTFILTERBANK containing the sampling rate, 
 %  cutoff frequencies and normalised cutoff frequencies of all filters in
 %  the bank.
 %
@@ -24,8 +24,8 @@
 %    must have the same sampling rate if you want the filter to be applied 
 %    at the correct frequencies.
 %  - bpo: bandwidth factor. Positive integer that specifies the number of 
-%    bands in an octave (i.e. BPO = 1, octave; BPO = 2, half-octave; BPO = 
-%    3, third-octave, etc). BPO determines the nominal bandwidth of the band-
+%    bands in an octave (i.e. BPO = 1, octave; BPO = 2, half-octave; BPO = 3, 
+%    third-octave, etc). BPO determines the nominal bandwidth of the band-
 %    pass filter. BPO is reciprocal of the bandwidth designator (see "Terms 
 %    and Definitions" in ANSI S1.11 or BS EN 61260-1:2014).
 %  - freqLimits: two-element vector indicating the bottom and top frequency 
@@ -47,7 +47,7 @@
 %      bands [Hz]
 %
 %  FUNCTION CALL
-%  FftFilter = FFTBANKFILTERDESIGN(fs,bpo,freqLimits) % ZEROPAD = TRUE
+%  FftFilterBank = fftFilterBankDesign(fs,bpo,freqLimits) % ZEROPAD = TRUE
 %
 %  FUNCTION DEPENDENCIES
 %  - None
@@ -56,12 +56,12 @@
 %  - MATLAB (Core)
 %
 %  EXAMPLE
-%  1) Configuration Data
+%  % 1) Configuration Data
 %  fs = 44100;
 %  freqLimits = [20 10e3];
 %
-%  2) Design FFT Filter
-%  FftFilter = FFTBANKFILTERDESIGN(fs,bpo,freqLimits)
+%  % 2) Design FFT Filter
+%  FftFilterBank = fftBankFilterDesign(fs,bpo,freqLimits)
 %
 %  REFERENCES
 %  - ANSI (2004), "ANSI S1.11: Specification for Octave, Half-Octave and
@@ -77,7 +77,7 @@
 %  email: gjarranz@gmail.com
 %  07 Aug 2021
 
-function FftFilter = fftBankFilterDesign(fs,bpo,freqLimits)
+function FftFilterBank = fftBankFilterDesign(fs,bpo,freqLimits)
 
 % Check Number of Input Arguments
 narginchk(3,3)
@@ -138,12 +138,12 @@ fbc = fb(:,2); % central frequencies of fractional octave bands
 fb2 = fb(:,3); % high-edge frequencies of fractional octave bands
 
 % Filter Signal
-FftFilter.sampleRate = fs;
-FftFilter.bandsPerOctave = bpo;
-FftFilter.nominalFreq = fbc_nom';
-FftFilter.centralFreq = fbc';
-FftFilter.halfPowerFreq1 = fb1';
-FftFilter.halfPowerFreq2 = fb2';
-FftFilter.centralFreqn = 2*fbc'/fs;
-FftFilter.halfPowerFreqn1 = 2*fb1'/fs;
-FftFilter.halfPowerFreqn2 = 2*fb2'/fs;
+FftFilterBank.sampleRate = fs;
+FftFilterBank.bandsPerOctave = bpo;
+FftFilterBank.nominalFreq = fbc_nom';
+FftFilterBank.centralFreq = fbc';
+FftFilterBank.halfPowerFreq1 = fb1';
+FftFilterBank.halfPowerFreq2 = fb2';
+FftFilterBank.centralFreqn = 2*fbc'/fs;
+FftFilterBank.halfPowerFreqn1 = 2*fb1'/fs;
+FftFilterBank.halfPowerFreqn2 = 2*fb2'/fs;
